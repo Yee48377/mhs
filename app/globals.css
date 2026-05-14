@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-mist text-ink antialiased;
+  background-image:
+    radial-gradient(circle at top center, rgba(206, 224, 244, 0.5), transparent 28%),
+    radial-gradient(circle at top left, rgba(186, 208, 236, 0.24), transparent 22%),
+    linear-gradient(180deg, #f8fbfe 0%, #eef3f8 45%, #edf2f7 100%);
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  @apply transition duration-200 ease-out;
+}
+
+::selection {
+  background: rgba(95, 152, 241, 0.22);
+}
+
+.card-surface {
+  @apply rounded-[30px] border border-slate-200/90 bg-white backdrop-blur-xl;
+}
+
+.card-muted {
+  @apply rounded-[24px] border border-slate-200/90 bg-slate-50/95 backdrop-blur;
+}
+
+.field {
+  @apply w-full rounded-[26px] border border-slate-200/90 bg-white px-4 py-3 text-sm text-ink outline-none placeholder:text-slate-400 focus:border-accent-300 focus:ring-4 focus:ring-accent-100;
+}
+
+.button-primary {
+  @apply inline-flex items-center justify-center rounded-full border border-ink bg-ink px-5 py-3 text-sm font-medium text-white hover:bg-slate-800;
+}
+
+.button-secondary {
+  @apply inline-flex items-center justify-center rounded-full border border-slate-200/90 bg-white px-5 py-3 text-sm font-medium text-ink hover:border-accent-200 hover:text-accent-600;
+}
+
+.eyebrow {
+  @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400;
+}
+
+.glass-divider {
+  @apply border-t border-slate-200/90;
+}
+
+.section-frame {
+  @apply rounded-[34px] border border-slate-200/80 bg-slate-50/55 p-2;
+}
