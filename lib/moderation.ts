@@ -13,6 +13,14 @@ const BANNED_PATTERNS = [
   { label: "去死", pattern: /去[\s\W_]*死/u }
 ] as const;
 
+const SENSITIVE_PATTERNS = [
+  { label: "手机号", pattern: /1[3-9]\d{9}/u },
+  { label: "邮箱", pattern: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/iu },
+  { label: "微信号", pattern: /微信|vx|v信|weixin|wx[:：]?\s*[a-z][a-z0-9_-]{5,}/iu },
+  { label: "QQ 号", pattern: /qq[:：]?\s*\d{5,12}/iu },
+  { label: "支付宝账号", pattern: /支付宝|alipay/u }
+] as const;
+
 function normalizeText(value: string) {
   return value
     .toLowerCase()
@@ -24,6 +32,18 @@ export function containsBannedTerms(...values: string[]) {
   const merged = normalizeText(values.join(" "));
 
   for (const item of BANNED_PATTERNS) {
+    if (item.pattern.test(merged)) {
+      return item.label;
+    }
+  }
+
+  return null;
+}
+
+export function containsSensitiveInfo(...values: string[]) {
+  const merged = values.join(" ");
+
+  for (const item of SENSITIVE_PATTERNS) {
     if (item.pattern.test(merged)) {
       return item.label;
     }

@@ -64,7 +64,7 @@ export async function GET(request: Request) {
           return { ...item, signedUrl: item.path };
         }
 
-        const { data, error } = await supabase.storage.from(bucket).createSignedUrl(item.path, 60 * 10);
+        const { data, error } = await supabase.storage.from(bucket).createSignedUrl(item.path, 60 * 60 * 24 * 7);
 
         if (error || !data?.signedUrl) {
           return null;

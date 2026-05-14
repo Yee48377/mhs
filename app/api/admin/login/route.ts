@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { getErrorMessage } from "@/lib/api-errors";
+import { ADMIN_SESSION_MAX_AGE, createAdminSessionToken } from "@/lib/auth";
 import { ADMIN_COOKIE } from "@/lib/constants";
 import { getServerEnv, hasServerEnv } from "@/lib/env";
 import { adminLoginSchema } from "@/lib/validators";
@@ -22,12 +23,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "密码错误" }, { status: 401 });
     }
 
-    cookies().set(ADMIN_COOKIE, "authenticated", {
+    cookies().set(ADMIN_COOKIE, createAdminSessionToken(), {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 8
+      maxAge: ADMIN_SESSION_MAX_AGE
     });
 
     return NextResponse.json({ success: true });

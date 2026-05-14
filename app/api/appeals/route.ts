@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 
 import { getErrorMessage } from "@/lib/api-errors";
 import { hasServerEnv } from "@/lib/env";
-import { containsBannedTerms } from "@/lib/moderation";
+import { containsBannedTerms, containsSensitiveInfo } from "@/lib/moderation";
 import { detectSubmissionFlags, recordSubmissionEvent } from "@/lib/observability";
+import { enforceRateLimit } from "@/lib/rate-limit";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { serializeStoredEvidenceUrls } from "@/lib/utils";
 import { appealSchema } from "@/lib/validators";
@@ -17,6 +18,23 @@ export async function POST(request: Request) {
   }
 
   try {
+    const limit = await enforceRateLimit({
+      request,
+      key: "appeal_submit",
+      limit: 8,
+      windowMs: 60 * 60 * 1000
+    });
+
+    if (limit.limited) {
+      await recordSubmissionEvent({
+        request,
+        eventType: "appeal_submit",
+        status: "rate_limited",
+        errorMessage: "说明 / 更正提交过于频繁"
+      });
+      return NextResponse.json({ error: "提交过于频繁，请稍后再试。" }, { status: 429 });
+    }
+
     const payload = await request.json();
     const parsed = appealSchema.parse(payload);
     const flags = await detectSubmissionFlags({
@@ -26,6 +44,7 @@ export async function POST(request: Request) {
       evidenceCount: parsed.evidence_urls.length
     });
     const bannedTerm = containsBannedTerms(parsed.statement);
+    const sensitiveInfo = containsSensitiveInfo(parsed.statement);
 
     if (bannedTerm) {
       await recordSubmissionEvent({
@@ -38,6 +57,21 @@ export async function POST(request: Request) {
       });
       return NextResponse.json(
         { error: `检测到不合适用语：${bannedTerm}。请改用时间线和事实描述。` },
+        { status: 400 }
+      );
+    }
+
+    if (sensitiveInfo) {
+      await recordSubmissionEvent({
+        request,
+        eventType: "appeal_submit",
+        status: "blocked",
+        targetId: parsed.report_id,
+        flags: [...flags, "blocked_sensitive_info"],
+        errorMessage: `检测到敏感信息：${sensitiveInfo}`
+      });
+      return NextResponse.json(
+        { error: `检测到敏感信息：${sensitiveInfo}。请先打码或移除后再提交。` },
         { status: 400 }
       );
     }

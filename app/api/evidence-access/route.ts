@@ -57,7 +57,7 @@ export async function GET(request: Request) {
 
       const { data: signed, error: signError } = await supabase.storage
         .from(bucket)
-        .createSignedUrl(firstEvidenceUrl, 60);
+        .createSignedUrl(firstEvidenceUrl, 60 * 30);
 
       if (signError || !signed?.signedUrl) {
         throw signError || new Error("无法生成证据访问链接。");
@@ -95,7 +95,7 @@ export async function GET(request: Request) {
 
       const { data: signed, error: signError } = await supabase.storage
         .from(bucket)
-        .createSignedUrl(firstEvidenceUrl, 60);
+        .createSignedUrl(firstEvidenceUrl, 60 * 60 * 24 * 7);
 
       if (signError || !signed?.signedUrl) {
         throw signError || new Error("无法生成证据访问链接。");

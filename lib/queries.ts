@@ -146,7 +146,7 @@ export async function getPublicEvidenceGallery(reportId: string) {
           return { ...item, signedUrl: item.evidence_url };
         }
 
-        const { data, error } = await supabase.storage.from(bucket).createSignedUrl(item.evidence_url, 60 * 10);
+        const { data, error } = await supabase.storage.from(bucket).createSignedUrl(item.evidence_url, 60 * 60 * 24 * 7);
 
         if (error || !data?.signedUrl) {
           return null;
