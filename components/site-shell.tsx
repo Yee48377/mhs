@@ -5,7 +5,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen">
       <header className="mx-auto max-w-6xl px-4 pt-6 sm:px-6">
-        <div className="flex flex-col items-center gap-3 rounded-[28px] border-[3px] border-black bg-white px-4 py-4 sm:flex-row sm:justify-between sm:rounded-full sm:py-3">
+        <div className="flex flex-col items-center gap-3 rounded-[28px] bg-white/95 px-4 py-4 sm:flex-row sm:justify-between sm:rounded-full sm:py-3">
           <Link href="/" className="text-center font-display text-base font-semibold tracking-tight text-ink sm:text-lg">
             约稿失联记录站
           </Link>

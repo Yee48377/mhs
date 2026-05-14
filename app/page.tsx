@@ -26,13 +26,13 @@ export default async function HomePage() {
   return (
     <SiteShell>
       <section className="space-y-5">
-        <div className="section-frame">
+        <div className="focus-frame">
           <div className="card-surface p-6 sm:p-8">
             <SearchPanel initialReports={allReports} />
           </div>
         </div>
 
-        <div id="record-index" className="space-y-4">
+        <div id="record-index" className="space-y-3">
           <div>
             <p className="eyebrow">Index</p>
             <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight">公开记录索引</h2>
@@ -42,23 +42,21 @@ export default async function HomePage() {
               <Link
                 key={key}
                 href={`/records/${encodeURIComponent(key)}` as Route}
-                className="rounded-full border border-slate-200 bg-white px-3 py-1 text-sm text-slate-600"
+                className="px-1 py-1 text-sm text-slate-500 hover:text-slate-900"
               >
                 {key}
               </Link>
             ))}
           </div>
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="flex flex-wrap gap-x-6 gap-y-3 px-1">
             {orderedGroupKeys.map((key) => (
               <Link
                 key={key}
                 href={`/records/${encodeURIComponent(key)}` as Route}
-                className="card-muted px-4 py-4 hover:border-accent-200"
+                className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
               >
-                <div className="flex items-center justify-between">
-                  <div className="font-display text-lg font-semibold text-ink">{key}</div>
-                  <div className="text-xs text-slate-500">{groupedReports[key].length} 条</div>
-                </div>
+                <span className="font-display text-base font-semibold text-ink">{key}</span>
+                <span className="text-xs text-slate-500">{groupedReports[key].length} 条</span>
               </Link>
             ))}
           </div>
@@ -68,7 +66,7 @@ export default async function HomePage() {
           <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="card-surface overflow-hidden p-6 sm:p-9">
               <div className="eyebrow">Commission Platforms</div>
-              <div className="mt-4 inline-flex rounded-full border border-slate-200/90 bg-slate-50 px-3 py-1 text-xs font-medium text-accent-600">
+              <div className="mt-4 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
                 米画师 / 画加 / 临界 / 其他约稿平台
               </div>
               <h1 className="mt-5 max-w-3xl text-center font-display text-4xl font-semibold tracking-tight text-ink sm:text-6xl">
@@ -91,17 +89,17 @@ export default async function HomePage() {
 
             <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
               <div className="card-muted px-5 py-5">
-                <SearchCheck className="h-5 w-5 text-accent-500" />
+                <SearchCheck className="h-5 w-5 text-slate-900" />
                 <p className="mt-4 text-sm font-medium text-ink">只看已公开的记录</p>
                 <p className="mt-2 text-sm leading-6 text-slate-500">搜索结果只展示公开可见内容，未公开记录不会显示。</p>
               </div>
               <div className="card-muted px-5 py-5">
-                <FileClock className="h-5 w-5 text-accent-500" />
+                <FileClock className="h-5 w-5 text-slate-900" />
                 <p className="mt-4 text-sm font-medium text-ink">证据默认私密保存</p>
                 <p className="mt-2 text-sm leading-6 text-slate-500">截图和补充材料走私有存储，不会直接公开原始文件地址。</p>
               </div>
               <div className="card-muted px-5 py-5">
-                <ShieldEllipsis className="h-5 w-5 text-accent-500" />
+                <ShieldEllipsis className="h-5 w-5 text-slate-900" />
                 <p className="mt-4 text-sm font-medium text-ink">支持补充与更正</p>
                 <p className="mt-2 text-sm leading-6 text-slate-500">公开页面会尽量隐藏敏感信息，并提供申诉、补充与更新渠道。</p>
               </div>

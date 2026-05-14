@@ -63,13 +63,13 @@ export function SearchPanel({ initialReports }: SearchPanelProps) {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 rounded-[30px] border-[3px] border-black bg-white p-2">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[22px] border-2 border-black bg-white text-slate-700">
+        <div className="flex items-center gap-3 rounded-[30px] border-2 border-slate-700 bg-white p-2">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[22px] text-slate-500">
             <span className="text-xl leading-none">🔍</span>
           </div>
           <input
             id="search"
-            className="field min-h-[68px] flex-1 border-black px-4 pr-4 text-base shadow-none focus:border-black focus:ring-0 sm:text-lg"
+            className="min-h-[68px] flex-1 rounded-[26px] bg-transparent px-4 pr-4 text-base text-ink outline-none placeholder:text-slate-400 focus:outline-none sm:text-lg"
             placeholder="输入对方 ID、UID 或用户名"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -78,10 +78,10 @@ export function SearchPanel({ initialReports }: SearchPanelProps) {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <span className="rounded-full border-2 border-black bg-white px-3 py-1.5 text-xs text-slate-500">
+        <span className="rounded-full bg-white px-3 py-1.5 text-xs text-slate-500">
           只显示已公开记录
         </span>
-        <span className="rounded-full border-2 border-black bg-white px-3 py-1.5 text-xs text-slate-500">
+        <span className="rounded-full bg-white px-3 py-1.5 text-xs text-slate-500">
           不展示未公开内容
         </span>
       </div>
