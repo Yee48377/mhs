@@ -45,7 +45,7 @@ export function ReportCard({ report }: { report: CommissionReport }) {
         </a>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-4">
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
         <Link href={`/reports/${report.id}`} className="inline-flex items-center text-sm font-medium text-accent-600">
           查看这条记录
           <ChevronRight className="ml-1 h-4 w-4" />

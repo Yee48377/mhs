@@ -191,6 +191,30 @@ export async function getPublicSupplementEntries(reportId: string) {
   }
 }
 
+export async function getReportHistory(reportId: string) {
+  if (!hasServerEnv()) {
+    return [];
+  }
+
+  try {
+    const supabase = createAdminSupabaseClient();
+    const { data, error } = await supabase
+      .from("admin_action_logs")
+      .select("*")
+      .eq("report_id", reportId)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      throw error;
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error("getReportHistory fallback:", error);
+    return [];
+  }
+}
+
 export async function searchPublicReports(query: string) {
   if (!hasServerEnv()) {
     return [];
@@ -229,7 +253,11 @@ export async function getAdminDashboardData() {
       reports: [],
       evidenceSubmissions: [],
       flaggedEvents: [],
-      adminActionLogs: []
+      adminActionLogs: [],
+      warnings: {
+        submissionEventsUnavailable: false,
+        adminActionLogsUnavailable: false
+      }
     };
   }
 
@@ -272,7 +300,11 @@ export async function getAdminDashboardData() {
       reports,
       evidenceSubmissions: evidence,
       flaggedEvents: flaggedEvents || [],
-      adminActionLogs: adminActionLogs || []
+      adminActionLogs: adminActionLogs || [],
+      warnings: {
+        submissionEventsUnavailable: Boolean(flaggedEventsError),
+        adminActionLogsUnavailable: Boolean(adminActionLogsError)
+      }
     };
   } catch (error) {
     console.error("getAdminDashboardData fallback:", error);
@@ -280,7 +312,11 @@ export async function getAdminDashboardData() {
       reports: [],
       evidenceSubmissions: [],
       flaggedEvents: [],
-      adminActionLogs: []
+      adminActionLogs: [],
+      warnings: {
+        submissionEventsUnavailable: true,
+        adminActionLogsUnavailable: true
+      }
     };
   }
 }

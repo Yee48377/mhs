@@ -5,13 +5,17 @@ import { Eye, EyeOff, Trash2, CheckCircle2, LogOut, PlusSquare } from "lucide-re
 
 import { StatusBadge } from "@/components/status-badge";
 import type { AdminActionLog, CommissionReport, EvidenceSubmission, SubmissionEvent } from "@/types";
-import { formatDate, parseStoredEvidenceUrls } from "@/lib/utils";
+import { formatDate, getAdminActionLabel, parseStoredEvidenceUrls } from "@/lib/utils";
 
 interface AdminDashboardProps {
   reports: CommissionReport[];
   evidenceSubmissions: EvidenceSubmission[];
   flaggedEvents: SubmissionEvent[];
   adminActionLogs: AdminActionLog[];
+  warnings: {
+    submissionEventsUnavailable: boolean;
+    adminActionLogsUnavailable: boolean;
+  };
 }
 
 function formatFlags(flags: unknown) {
@@ -22,7 +26,7 @@ function formatFlags(flags: unknown) {
   return flags.filter((value): value is string => typeof value === "string");
 }
 
-export function AdminDashboard({ reports, evidenceSubmissions, flaggedEvents, adminActionLogs }: AdminDashboardProps) {
+export function AdminDashboard({ reports, evidenceSubmissions, flaggedEvents, adminActionLogs, warnings }: AdminDashboardProps) {
   const [busyId, setBusyId] = useState("");
   const [items, setItems] = useState(reports);
   const [submissions, setSubmissions] = useState(evidenceSubmissions);
@@ -131,6 +135,14 @@ export function AdminDashboard({ reports, evidenceSubmissions, flaggedEvents, ad
         </div>
       ) : null}
 
+      {warnings.adminActionLogsUnavailable || warnings.submissionEventsUnavailable ? (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-7 text-amber-800">
+          后台监控数据尚未完整启用。
+          {warnings.adminActionLogsUnavailable ? " 处理记录与历史日志当前不可用，请先执行最新的 Supabase schema.sql。" : ""}
+          {warnings.submissionEventsUnavailable ? " 异常提交监控当前不可用，请先执行最新的 Supabase schema.sql。" : ""}
+        </div>
+      ) : null}
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-display text-3xl font-semibold tracking-tight">管理员后台</h1>
@@ -207,7 +219,7 @@ export function AdminDashboard({ reports, evidenceSubmissions, flaggedEvents, ad
                     <CheckCircle2 className="mr-2 h-4 w-4" />
                     已解决
                   </button>
-                  <div className="col-span-2 rounded-2xl border border-dashed border-line px-3 py-2 text-xs leading-6 text-slate-500">
+                  <div className="col-span-1 rounded-2xl border border-dashed border-line px-3 py-2 text-xs leading-6 text-slate-500 sm:col-span-2">
                     审核重点：证据是否完整、是否暴露敏感信息、是否存在辱骂定性用语，以及是否应切换为“已解决”或“已隐藏”。
                   </div>
                   <button
@@ -274,6 +286,26 @@ export function AdminDashboard({ reports, evidenceSubmissions, flaggedEvents, ad
           ) : (
             <div className="card-surface p-6 text-sm text-slate-500">暂时没有新的补充材料或说明。</div>
           )}
+      </section>
+
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-xl font-semibold">最近处理记录</h2>
+          <span className="text-sm text-slate-500">{adminActionLogs.length} 条</span>
+        </div>
+        <div className="grid gap-3">
+          {adminActionLogs.map((entry) => (
+            <article key={entry.id} className="card-surface px-4 py-4 text-sm text-slate-600">
+              <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                <div className="font-medium text-ink">{getAdminActionLabel(entry.action)}</div>
+                <div className="text-xs text-slate-500">{formatDate(entry.created_at)}</div>
+              </div>
+              <div className="mt-2 break-all text-xs text-slate-500">
+                target: {entry.target_type} / {entry.target_id}
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="grid gap-6 xl:grid-cols-2">

@@ -50,7 +50,10 @@ export async function PATCH(request: Request, { params }: { params: { id: string
         action: "delete_submission",
         targetType: "evidence_submission",
         targetId: params.id,
-        reportId: submission.report_id
+        reportId: submission.report_id,
+        details: {
+          previous: submission
+        }
       });
       return NextResponse.json({ success: true });
     }
@@ -71,7 +74,11 @@ export async function PATCH(request: Request, { params }: { params: { id: string
         action: "hide_submission",
         targetType: "evidence_submission",
         targetId: params.id,
-        reportId: submission.report_id
+        reportId: submission.report_id,
+        details: {
+          previous: submission.review_status,
+          next: "已拒绝"
+        }
       });
       return NextResponse.json({ success: true, submission: data });
     }
@@ -93,7 +100,11 @@ export async function PATCH(request: Request, { params }: { params: { id: string
         action: "approve_submission",
         targetType: "evidence_submission",
         targetId: params.id,
-        reportId: submission.report_id
+        reportId: submission.report_id,
+        details: {
+          previous: submission.review_status,
+          next: "已通过"
+        }
       });
       return NextResponse.json({ success: true, submission: data });
     }

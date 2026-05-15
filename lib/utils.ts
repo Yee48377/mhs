@@ -84,3 +84,18 @@ export function getRecordIndexKey(value: string) {
 
   return "#";
 }
+
+export function getAdminActionLabel(action: string) {
+  const labelMap: Record<string, string> = {
+    publish: "公开记录",
+    hide: "隐藏记录",
+    reject: "驳回记录",
+    resolve: "标记已解决",
+    delete_report: "删除记录",
+    approve_submission: "公开补充材料",
+    hide_submission: "隐藏补充材料",
+    delete_submission: "删除补充材料"
+  };
+
+  return labelMap[action] || action;
+}

@@ -32,6 +32,7 @@ export default async function AdminPage() {
         evidenceSubmissions={data.evidenceSubmissions}
         flaggedEvents={data.flaggedEvents}
         adminActionLogs={data.adminActionLogs}
+        warnings={data.warnings}
       />
     </SiteShell>
   );

@@ -6,16 +6,17 @@ import { ExternalLink } from "lucide-react";
 import { EvidenceGallery } from "@/components/evidence-gallery";
 import { SiteShell } from "@/components/site-shell";
 import { StatusBadge } from "@/components/status-badge";
-import { getPublicEvidenceGallery, getPublicReportById, getPublicSupplementEntries } from "@/lib/queries";
-import { formatDate, getRecordIndexKey } from "@/lib/utils";
+import { getPublicEvidenceGallery, getPublicReportById, getPublicSupplementEntries, getReportHistory } from "@/lib/queries";
+import { formatDate, getAdminActionLabel, getRecordIndexKey } from "@/lib/utils";
 
 export const revalidate = 300;
 
 export default async function ReportDetailPage({ params }: { params: { id: string } }) {
-  const [report, evidenceItems, supplementEntries] = await Promise.all([
+  const [report, evidenceItems, supplementEntries, historyEntries] = await Promise.all([
     getPublicReportById(params.id),
     getPublicEvidenceGallery(params.id),
-    getPublicSupplementEntries(params.id)
+    getPublicSupplementEntries(params.id),
+    getReportHistory(params.id)
   ]);
 
   if (!report) {
@@ -46,7 +47,7 @@ export default async function ReportDetailPage({ params }: { params: { id: strin
             </span>
           </div>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <div className="card-muted px-4 py-4 text-sm text-slate-600">
               <div className="text-xs text-slate-400">最后联系日期</div>
               <div className="mt-2 font-medium text-ink">{formatDate(report.last_contact)}</div>
@@ -91,10 +92,10 @@ export default async function ReportDetailPage({ params }: { params: { id: strin
             </Link>
           </div>
 
-          <div className="mt-3 grid gap-3 sm:grid-cols-1">
+          <div className="mt-3 grid gap-3">
             <Link
               href={`/records/${encodeURIComponent(indexKey)}` as Route}
-              className="card-muted flex items-center justify-between gap-3 px-4 py-4 text-sm text-slate-600 hover:border-accent-200"
+              className="card-muted flex items-center justify-between gap-3 px-4 py-4 text-sm text-slate-600"
             >
               <span>查看 {indexKey} 分类下的其他记录</span>
               <ExternalLink className="h-4 w-4" />
@@ -119,6 +120,22 @@ export default async function ReportDetailPage({ params }: { params: { id: strin
               返回首页索引
             </Link>
           </div>
+
+          {historyEntries.length > 0 ? (
+            <div className="glass-divider mt-6 pt-6">
+              <h2 className="font-display text-xl font-semibold tracking-tight">处理记录</h2>
+              <div className="mt-4 space-y-3">
+                {historyEntries.map((entry) => (
+                  <div key={entry.id} className="card-muted px-4 py-4 text-sm text-slate-600">
+                    <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                      <span className="font-medium text-ink">{getAdminActionLabel(entry.action)}</span>
+                      <span className="text-xs text-slate-500">{formatDate(entry.created_at)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
       </section>
     </SiteShell>

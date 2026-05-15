@@ -32,6 +32,12 @@ export async function PATCH(
     const supabase = createAdminSupabaseClient();
 
     if (parsed.action === "delete") {
+      const { data: existingReport } = await supabase
+        .from("commission_reports")
+        .select("*")
+        .eq("id", params.id)
+        .maybeSingle();
+
       const { error } = await supabase.from("commission_reports").delete().eq("id", params.id);
 
       if (error) {
@@ -45,7 +51,10 @@ export async function PATCH(
         action: "delete_report",
         targetType: "commission_report",
         targetId: params.id,
-        reportId: params.id
+        reportId: params.id,
+        details: {
+          previous: existingReport
+        }
       });
 
       return NextResponse.json({ success: true });
@@ -93,7 +102,9 @@ export async function PATCH(
       targetType: "commission_report",
       targetId: params.id,
       reportId: params.id,
-      details: patch
+      details: {
+        next: patch
+      }
     });
 
     return NextResponse.json({ report: data });

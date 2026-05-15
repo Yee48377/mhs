@@ -87,7 +87,7 @@ export function ReportForm() {
     <>
       {noticeOpen ? (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/40 px-4 py-8 backdrop-blur-sm">
-          <div className="card-surface w-full max-w-2xl p-6 sm:p-8">
+          <div className="card-surface max-h-[85vh] w-full max-w-2xl overflow-y-auto p-5 sm:p-8">
             <div className="flex items-start gap-3">
               <AlertCircle className="mt-1 h-5 w-5 shrink-0 text-amber-500" />
               <div>
