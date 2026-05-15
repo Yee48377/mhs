@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 import { getErrorMessage } from "@/lib/api-errors";
 import { hasServerEnv } from "@/lib/env";
@@ -101,24 +102,26 @@ export async function POST(request: Request) {
       contact: parsed.contact || null,
       description: parsed.description,
       evidence_url: serializeStoredEvidenceUrls(parsed.evidence_urls),
-      review_status: "待处理"
+      review_status: "已通过"
     });
 
     if (error) {
       throw error;
     }
 
+    revalidatePath(`/reports/${parsed.report_id}`);
+
     await recordSubmissionEvent({
       request,
       eventType: "evidence_submit",
-      status: "submitted",
+      status: "published",
       recordId: parsed.report_id,
       targetId: parsed.report_id,
       flags
     });
 
     return NextResponse.json({
-      message: "补充证据已提交，管理员会决定是否展示。",
+      message: "补充证据已提交并公开。",
       reportId: parsed.report_id
     });
   } catch (error) {
